@@ -1,0 +1,75 @@
+﻿CREATE DATABASE School;
+
+USE [School]
+
+--Crete Genders Table and value
+CREATE TABLE Genders
+(
+  Id INT IDENTITY NOT NULL PRIMARY KEY,
+  Name NVARCHAR(50)
+);
+INSERT INTO Genders VALUES
+(N'მდედრობითი'),
+(N'მამრობითი');
+
+--Crete Subjects Table and value
+CREATE TABLE Subjects
+(
+  Id INT IDENTITY NOT NULL PRIMARY KEY,
+  Name NVARCHAR(50)
+);
+INSERT INTO Subjects VALUES
+(N'ინგლისური'),
+(N'კომპიუტერული მეცნიერება');
+
+--Crete Teachers Table and value
+CREATE TABLE Teachers
+(
+  Id INT IDENTITY NOT NULL PRIMARY KEY,
+  Name NVARCHAR(50),
+  LastName NVARCHAR(50),
+  SubjectId INT FOREIGN KEY REFERENCES Subjects(Id),
+  GenderId INT FOREIGN KEY REFERENCES Genders(Id)
+);
+INSERT INTO Teachers VALUES
+(N'მარიამ',N'ბაძგარაძე',1,1),
+(N'არჩილ',N'ბაძგარაძე',2,2);
+
+--Crete Pupils Table and value
+CREATE TABLE Pupils
+(
+  Id INT IDENTITY NOT NULL PRIMARY KEY,
+  Name NVARCHAR(50),
+  LastName NVARCHAR(50),
+  Class INT,
+  GenderId INT FOREIGN KEY REFERENCES Genders(Id)
+);
+
+INSERT INTO Pupils VALUES
+(N'სალომე',N'წიკლაური',9,1),
+(N'გიორგი',N'ბაძგარაძე',11,2),
+(N'რევაზი',N'გიგაური',10,2);
+
+
+--Crete Teachers_To_Pupils Table and value
+CREATE TABLE PupilTeacher
+(
+  TeachersId INT,
+  PupilsId INT,
+  CONSTRAINT Teachers_Pupils_PK PRIMARY KEY (TeachersId, PupilsId),
+  CONSTRAINT FK_Teacher FOREIGN KEY (TeachersId) REFERENCES Teachers (Id),
+  CONSTRAINT FK__Pupil  FOREIGN KEY (PupilsId) REFERENCES Pupils (Id)
+);
+
+INSERT INTO PupilTeacher
+VALUES 
+(1, 1), 
+(1, 2), 
+(2, 2), 
+(2, 3);
+
+--SQL Command
+SELECT t.Name FROM Teachers t
+join Teachers_To_Pupils tp ON tp.TeacherId = t.Id
+join Pupils p ON tp.PupilId = p.Id
+WHERE p.Name = N'გიორგი';
